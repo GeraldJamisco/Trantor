@@ -19,6 +19,7 @@ from typing import Any
 
 from trantor.config import load_settings, settings_snapshot
 from trantor.research.backtest.data import DEFAULT_CHECKSUMS, load_research_data
+from trantor.research.diagnostics import DiagnosticConfig, TradeDiagnosticsService
 from trantor.strategy.research_record import canonical_json
 
 APP_VERSION = "0.1.0"
@@ -156,6 +157,7 @@ class ResearchRepository:
         self._tail_cache: dict[int, list[dict[str, Any]]] = {}
         self._research_data: Any = None
         self._settings_cache: dict[str, Any] | None = None
+        self._diagnostics_cache: dict[str, Any] | None = None
 
     # ---- artifact loading -------------------------------------------------
 
@@ -951,6 +953,25 @@ class ResearchRepository:
             ],
             "limitations": summary.get("limitations") or [],
         }
+
+    def diagnostics_payload(self) -> dict[str, Any]:
+        """Return the verified Phase F trade-level diagnostics, cached per server."""
+
+        if self._diagnostics_cache is None:
+            self._load()
+            try:
+                service = TradeDiagnosticsService(
+                    DiagnosticConfig(
+                        artifact_dir=self.config.artifact_dir,
+                        repo_root=self.config.repo_root,
+                    )
+                )
+                self._diagnostics_cache = service.build()
+            except Exception as exc:
+                raise DashboardError(
+                    f"Trade diagnostics could not be validated: {type(exc).__name__}: {exc}"
+                ) from exc
+        return self._diagnostics_cache
 
     def trades_payload(self, filters: dict[str, str]) -> dict[str, Any]:
         self._load()

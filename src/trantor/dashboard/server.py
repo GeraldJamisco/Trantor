@@ -93,6 +93,12 @@ class DashboardRequestHandler(BaseHTTPRequestHandler):
                     self.repository.trades_payload(self._query()),
                 )
                 return
+            if path == "/api/diagnostics":
+                self._send_json(
+                    HTTPStatus.OK,
+                    self.repository.diagnostics_payload(),
+                )
+                return
             if path == "/api/decisions":
                 self._send_json(
                     HTTPStatus.OK,

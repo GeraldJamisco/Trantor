@@ -381,6 +381,17 @@ def test_authoritative_snapshot_reconciles() -> None:
     assert overview["record_validation"]["status"] == "PASS"
 
 
+def test_authoritative_diagnostics_are_exposed_read_only() -> None:
+    config = DashboardConfig.default()
+    if not (config.artifact_dir / "summary.json").is_file():
+        pytest.skip("authoritative Phase E artifacts are not present")
+    payload = ResearchRepository(config).diagnostics_payload()
+    assert payload["verification"]["status"] == "PASS"
+    assert len(payload["trades"]) == 43
+    assert payload["drawdown"]["maximum_drawdown_r"] == 17.0
+    assert payload["ambiguous"]["ambiguous_bar_count"] == 6
+
+
 def test_missing_and_invalid_artifacts_are_warnings(tmp_path: Path) -> None:
     (tmp_path / "artifacts").mkdir()
     repo = ResearchRepository(

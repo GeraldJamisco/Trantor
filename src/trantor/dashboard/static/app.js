@@ -4,6 +4,7 @@ const state = {
   overview: null,
   route: "dashboard",
   tradeFilters: { side: "", period: "", status: "", sort: "entry_time_desc" },
+  diagnosticFilters: { split: "", side: "", score: "", outcome: "" },
   decisionFilters: { status: "", side: "", period: "", rejection: "", score_min: "", score_max: "", sort: "newest", page: 1, page_size: 25 },
   trades: [],
   lastDecisionHash: null,
@@ -16,6 +17,7 @@ const PAGE_META = {
   strategy: ["Strategy", "The complete intended strategy specification and the research variant actually run."],
   chart: ["Market Chart", "Historical D1, H4, and M15 research candles. Not live prices."],
   trades: ["Trade Explorer", "Simulated historical trades from the authoritative trade records."],
+  diagnostics: ["Trade Diagnostics", "Phase F descriptive trade-level analysis, including the 2025 validation trades."],
   decisions: ["Decision History", "Canonical StrategyDecision records, filtered and paginated server-side."],
   data: ["Data & Datasets", "Dataset identity, row counts, checksums, and timestamp limitations."],
   reports: ["Reports & Results", "Experiment summary, manifest, artifacts, and validation status."],
@@ -254,6 +256,83 @@ async function renderStrategy() {
     <section class="panel"><div class="panel-head"><h2 class="panel-title">Actual Strategy Parameters</h2><div class="panel-subtitle">From the authoritative summary record</div></div><div class="panel-body table-scroll"><table class="data-table"><thead><tr><th>Parameter</th><th class="num">Value</th></tr></thead><tbody>${params.map(([key, value]) => `<tr><td class="mono">${esc(key)}</td><td class="num mono">${esc(JSON.stringify(value))}</td></tr>`).join("")}</tbody></table></div></section>`;
 }
 
+function diagnosticStatCells(stats) {
+  return `<td class="num">${esc(stats.trade_count ?? 0)}</td><td class="num">${esc(stats.win_count ?? 0)} / ${esc(stats.loss_count ?? 0)}</td><td class="num">${fmtPct(stats.win_rate)}</td><td class="num ${tone(stats.gross_realized_r)}">${fmtR(stats.gross_realized_r)}</td><td class="num ${tone(stats.expectancy_r)}">${fmtR(stats.expectancy_r)}</td><td class="num">${stats.profit_factor == null ? "n/a" : fmt(stats.profit_factor, 4)}</td><td>${stats.inconclusive ? badge("inconclusive") : badge("descriptive")}</td>`;
+}
+
+function diagnosticGroupTable(groups) {
+  return `<div class="table-scroll"><table class="data-table"><thead><tr><th>Group</th><th class="num">Trades</th><th class="num">W / L</th><th class="num">Win rate</th><th class="num">Realized R</th><th class="num">Expectancy</th><th class="num">PF</th><th>Sample</th></tr></thead><tbody>${Object.entries(groups || {}).map(([label, stats]) => `<tr><td>${esc(label)}</td>${diagnosticStatCells(stats)}</tr>`).join("") || `<tr><td colspan="8">${emptyState("No group data.")}</td></tr>`}</tbody></table></div>`;
+}
+
+function diagnosticTradeRows(rows) {
+  return rows.map((row) => `<tr data-diagnostic-id="${esc(row.trade_id)}">
+    <td class="mono">${esc(row.trade_id)}</td><td>${esc(row.split)}</td><td>${badge(row.side)}</td><td class="num">${esc(row.score ?? "—")}</td>
+    <td class="num mono">${fmt(row.risk_distance, 2)}</td><td class="num mono">${fmt(row.entry_price, 2)}</td><td class="num mono">${fmt(row.stop, 2)}</td><td class="num mono">${fmt(row.tp1, 2)}</td><td class="num mono">${fmt(row.tp2, 2)}</td>
+    <td>${badge(row.exit_classification)}</td><td class="num ${tone(row.realized_r)}">${fmtR(row.realized_r)}</td><td class="num">${fmt(row.max_favorable_excursion_r, 2)}</td><td class="num">${fmt(row.max_adverse_excursion_r, 2)}</td><td>${row.tp1_reached ? badge("yes", "green") : badge("no", "red")}</td><td>${row.tp2_completed ? badge("yes", "green") : badge("no", "red")}</td><td>${row.ambiguous_bar_count ? badge("ambiguous", "amber") : "—"}</td><td class="mono">${esc(shortHash(row.decision_hash))}</td>
+  </tr>`).join("");
+}
+
+function updateDiagnosticTable() {
+  const rows = state.diagnostics || [];
+  const filtered = rows.filter((row) => {
+    const f = state.diagnosticFilters;
+    return (!f.split || row.split === f.split) && (!f.side || row.side === f.side) && (!f.score || String(row.score) === f.score) && (!f.outcome || (f.outcome === "win" ? row.is_win : f.outcome === "loss" ? row.is_loss : row.tp1_reached));
+  });
+  const body = document.getElementById("diagnostic-rows");
+  if (body) {
+    body.innerHTML = diagnosticTradeRows(filtered) || `<tr><td colspan="17">${emptyState("No trades match the selected diagnostic filters.")}</td></tr>`;
+    document.querySelectorAll("#diagnostic-rows tr[data-diagnostic-id]").forEach((row) => row.addEventListener("click", () => {
+      const selected = state.diagnostics.find((item) => String(item.trade_id) === row.dataset.diagnosticId);
+      if (selected) renderDiagnosticDetail(selected);
+    }));
+  }
+  const count = document.getElementById("diagnostic-count");
+  if (count) count.textContent = `${filtered.length} of ${rows.length} trades`;
+}
+
+function renderDiagnosticDetail(row) {
+  const factors = (row.score_factors || []).map((factor) => `<tr><td class="mono">${esc(factor.name)}</td><td>${factor.awarded ? badge("awarded", "green") : badge("not awarded", "gray")}</td><td class="num">${esc(factor.points)}</td><td>${esc(factor.detail)}</td></tr>`).join("");
+  const exits = (row.exits || []).map((exit) => `<tr><td class="mono">${esc(exit.exit_time)}</td><td>${esc(exit.reason)}</td><td class="num mono">${fmt(exit.price, 2)}</td><td class="num">${fmt(exit.fraction, 2)}</td><td class="num ${tone(exit.contribution)}">${fmtR(exit.contribution)}</td><td>${exit.ambiguous ? badge("ambiguous", "amber") : "—"}</td></tr>`).join("");
+  document.getElementById("diagnostic-detail").innerHTML = `<section class="panel detail-drawer"><div class="panel-head"><div><div class="detail-title">Trade #${esc(row.trade_id)} · ${esc(row.split)}</div><div class="detail-sub">${esc(row.decision_time)} · ${esc(row.side)} · ${esc(row.exit_classification)}</div></div>${badge(row.exit_classification)}</div><div class="panel-body">
+    ${keyValue([["Decision hash", `<span class="mono">${esc(row.decision_hash)}</span>`], ["Entry reference", `${fmt(row.entry_reference, 2)} · recorded ${fmt(row.entry_price, 2)}`], ["Initial stop", fmt(row.stop, 2)], ["TP1 / TP2", `${fmt(row.tp1, 2)} / ${fmt(row.tp2, 2)}`], ["Risk distance", `${fmt(row.risk_distance, 2)} (${fmt(row.risk_distance_pct_of_entry, 3)}% of entry)`], ["D1 / H4", `${esc(row.d1_bias)} / ${esc(row.h4_direction)} · ${esc(row.d1_h4_alignment)}`], ["Confluence", `${esc(row.score)} / 8 · ${esc(row.confidence)}`], ["Realized R", `<span class="${tone(row.realized_r)}">${fmtR(row.realized_r)}</span>`], ["Holding", `${esc(row.bars_held)} bars · ${fmt(row.holding_hours, 2)}h`], ["MFE / MAE", `${fmt(row.max_favorable_excursion_r, 2)}R / ${fmt(row.max_adverse_excursion_r, 2)}R`], ["Excursion bars", esc(row.excursion_bars)]])}
+    <div class="mini-callout" style="margin-top:13px">MFE/MAE are derived bar-level approximations from M15 high/low. Intrabar path and post-exit movement are not known.</div>
+    <div class="section-title" style="margin-top:16px">Recorded score components</div><div class="table-scroll"><table class="data-table"><thead><tr><th>Component</th><th>Award</th><th class="num">Points</th><th>Recorded detail</th></tr></thead><tbody>${factors}</tbody></table></div>
+    <div class="section-title" style="margin-top:16px">M15 trigger record</div><div class="raw-json">${esc(row.m15_trigger?.rationale || "No rationale available.")}</div>
+    <div class="section-title" style="margin-top:16px">Exit events</div><div class="table-scroll"><table class="data-table"><thead><tr><th>Time</th><th>Reason</th><th class="num">Price</th><th class="num">Fraction</th><th class="num">Contribution</th><th>Flag</th></tr></thead><tbody>${exits}</tbody></table></div>
+  </div></section>`;
+}
+
+async function renderDiagnostics() {
+  const data = await getJSON("/api/diagnostics");
+  state.diagnostics = data.trades || [];
+  const splitStats = data.breakdowns?.by_split || {};
+  const validation = splitStats.validation || {};
+  const validationRows = state.diagnostics.filter((row) => row.split === "validation");
+  const ambiguousValidation = validationRows.filter((row) => row.ambiguous_bar_count).length;
+  const drawdown = data.drawdown || {};
+  document.getElementById("page").innerHTML = `${pageHeading("Trade Diagnostics", "Phase F descriptive analysis of all 43 closed trades, with a focused 2025 validation view.")}
+    ${warningBanner([data.gross_label || "GROSS BASELINE - EXECUTION COSTS EXCLUDED", "Descriptive gross-R analysis only. Small groups are inconclusive; observations are not causal claims."])}
+    <div class="status-grid" style="grid-template-columns:repeat(4,minmax(0,1fr));margin-bottom:16px">
+      <div class="status-card ${data.verification?.status === "PASS" ? "green" : "red"}"><div class="status-card-label">Diagnostic verification</div><div class="status-card-value">${esc(data.verification?.status || "UNKNOWN")}</div><div class="status-card-sub">${esc(data.verification?.trades_checked ?? 0)} trades · ${esc(data.verification?.linked_decisions_checked ?? 0)} linked decisions</div></div>
+      <div class="status-card"><div class="status-card-label">All trades</div><div class="status-card-value">${esc(data.breakdowns?.overall?.trade_count ?? 0)}</div><div class="status-card-sub">${fmtR(data.breakdowns?.overall?.gross_realized_r)} overall</div></div>
+      <div class="status-card red"><div class="status-card-label">2025 validation</div><div class="status-card-value">${fmtR(validation.gross_realized_r)}</div><div class="status-card-sub">${esc(validation.win_count ?? 0)} wins / ${esc(validation.loss_count ?? 0)} losses · ${fmtPct(validation.win_rate)}</div></div>
+      <div class="status-card amber"><div class="status-card-label">Max drawdown</div><div class="status-card-value">${fmt(drawdown.maximum_drawdown_r, 2)}R</div><div class="status-card-sub">Peak trade ${esc(drawdown.peak_trade_id ?? "—")} → trough ${esc(drawdown.trough_trade_id ?? "—")}</div></div>
+    </div>
+    <div class="section-grid grid-2" style="margin-bottom:16px">
+      <section class="panel"><div class="panel-head"><div><h2 class="panel-title">2025 Validation Focus</h2><div class="panel-subtitle">21 closed trades · descriptive only</div></div>${badge("inconclusive", "amber")}</div><div class="panel-body">
+        <div class="metrics-grid">${["<div class='metric-card'><div class='metric-label'>Trades</div><div class='metric-value'>" + esc(validation.trade_count ?? 0) + "</div></div>", "<div class='metric-card'><div class='metric-label'>Stopped</div><div class='metric-value negative'>" + esc(validationRows.filter((row) => row.exit_classification === "stopped").length) + "</div></div>", "<div class='metric-card'><div class='metric-label'>TP1 reached</div><div class='metric-value'>" + esc(validationRows.filter((row) => row.tp1_reached).length) + "</div></div>", "<div class='metric-card'><div class='metric-label'>Ambiguous trades</div><div class='metric-value amber'>" + esc(ambiguousValidation) + "</div></div>"].join("")}</div>
+        <ul class="list-clean" style="margin-top:14px"><li>All 19 validation losses exited at the initial stop; the two wins were TP2 (+2.5R) and breakeven-after-TP1 (+1.0R).</li><li>Only 2 of 21 validation trades reached TP1. The 19 trades that did not reach TP1 lost an average of -1.0R.</li><li>Four validation trades had ambiguous stop/target bars; conservative stop-first handling produced -1R for each. Other intrabar paths are unknown.</li><li>The validation group is below the 30-trade threshold; this is not statistical evidence.</li></ul>
+      </div></section>
+      <section class="panel"><div class="panel-head"><div><h2 class="panel-title">Drawdown Reconciliation</h2><div class="panel-subtitle">Cumulative realized R, ordered by exit</div></div>${drawdown.matches_summary ? badge("matches summary", "green") : badge("mismatch", "red")}</div><div class="panel-body">${keyValue([["Maximum drawdown", `${fmt(drawdown.maximum_drawdown_r, 2)}R`], ["Peak cumulative", `${fmt(drawdown.peak_cumulative_r, 2)}R at trade ${esc(drawdown.peak_trade_id)}`], ["Trough trade", esc(drawdown.trough_trade_id)], ["Definition", esc(drawdown.definition)]])}</div></section>
+    </div>
+    <section class="panel" style="margin-bottom:16px"><div class="panel-head"><h2 class="panel-title">Performance Breakdowns</h2><div class="panel-subtitle">All groups are gross R; <30 trades is inconclusive</div></div><div class="panel-body"><div class="section-grid grid-equal"><div><div class="section-title">By score</div>${diagnosticGroupTable(data.breakdowns?.by_score)}</div><div><div class="section-title">By exit classification</div>${diagnosticGroupTable(data.breakdowns?.by_exit_classification)}</div></div><div class="section-grid grid-equal" style="margin-top:16px"><div><div class="section-title">TP1 reached</div>${diagnosticGroupTable(data.breakdowns?.by_tp1_reached)}</div><div><div class="section-title">TP2 completed</div>${diagnosticGroupTable(data.breakdowns?.by_tp2_completed)}</div></div></div></section>
+    <section class="panel" style="margin-bottom:16px"><div class="panel-head"><h2 class="panel-title">Exit Reconciliation and Ambiguity</h2><div class="panel-subtitle">Actual event counts versus summary</div></div><div class="panel-body"><div class="section-grid grid-equal"><div>${keyValue([["TP1 events", esc(data.exit_reconciliation?.actual?.tp1_events)], ["TP2 completions", esc(data.exit_reconciliation?.actual?.tp2_events)], ["Breakeven exits", esc(data.exit_reconciliation?.actual?.breakeven_stops)], ["Initial stops", esc(data.exit_reconciliation?.actual?.initial_stops)], ["Summary reconciliation", data.exit_reconciliation?.matches_summary ? badge("PASS", "green") : badge("REVIEW", "amber")]])}</div><div><div class="section-title">Ambiguous stop-first events</div><div class="table-scroll"><table class="data-table"><thead><tr><th>Trade</th><th>Split</th><th>Event</th><th>Bar high / low</th><th>TP1 / TP2 touched</th><th class="num">R</th></tr></thead><tbody>${(data.ambiguous?.events || []).map((event) => `<tr><td>${esc(event.trade_id)}</td><td>${esc(event.split)}</td><td>${esc(event.event_reason)}</td><td class="mono">${fmt(event.bar_high, 2)} / ${fmt(event.bar_low, 2)}</td><td>${event.bar_touched_tp1 ? "TP1" : "—"} / ${event.bar_touched_tp2 ? "TP2" : "—"}</td><td class="num ${tone(event.realized_r)}">${fmtR(event.realized_r)}</td></tr>`).join("") || `<tr><td colspan="6">No ambiguous events.</td></tr>`}</tbody></table></div></div></div></div></section>
+    <section class="panel"><div class="panel-head"><div><h2 class="panel-title">All Trade Diagnostics</h2><div class="panel-subtitle" id="diagnostic-count">43 of 43 trades</div></div><div class="toolbar"><div class="field"><label for="diag-split">Split</label><select id="diag-split"><option value="">All</option>${["development","validation","holdout"].map((v) => `<option value="${v}" ${state.diagnosticFilters.split === v ? "selected" : ""}>${v}</option>`).join("")}</select></div><div class="field"><label for="diag-side">Direction</label><select id="diag-side"><option value="">All</option>${["buy","sell"].map((v) => `<option value="${v}" ${state.diagnosticFilters.side === v ? "selected" : ""}>${v}</option>`).join("")}</select></div><div class="field"><label for="diag-score">Score</label><select id="diag-score"><option value="">All</option>${[5,6,7,8].map((v) => `<option value="${v}" ${state.diagnosticFilters.score === String(v) ? "selected" : ""}>${v}</option>`).join("")}</select></div><div class="field"><label for="diag-outcome">Outcome</label><select id="diag-outcome"><option value="">All</option><option value="win" ${state.diagnosticFilters.outcome === "win" ? "selected" : ""}>Wins</option><option value="loss" ${state.diagnosticFilters.outcome === "loss" ? "selected" : ""}>Losses</option><option value="tp1" ${state.diagnosticFilters.outcome === "tp1" ? "selected" : ""}>TP1 reached</option></select></div></div></div><div class="table-scroll"><table class="data-table"><thead><tr><th>ID</th><th>Split</th><th>Side</th><th class="num">Score</th><th class="num">Risk</th><th class="num">Entry</th><th class="num">Stop</th><th class="num">TP1</th><th class="num">TP2</th><th>Exit</th><th class="num">R</th><th class="num">MFE</th><th class="num">MAE</th><th>TP1</th><th>TP2</th><th>Amb</th><th>Decision</th></tr></thead><tbody id="diagnostic-rows"></tbody></table></div></section><div id="diagnostic-detail"></div>`;
+  const bindings = { "diag-split": "split", "diag-side": "side", "diag-score": "score", "diag-outcome": "outcome" };
+  Object.entries(bindings).forEach(([id, key]) => document.getElementById(id).addEventListener("change", (event) => { state.diagnosticFilters[key] = event.target.value; updateDiagnosticTable(); }));
+  updateDiagnosticTable();
+}
+
 async function renderTrades() {
   const data = await getJSON("/api/trades", state.tradeFilters);
   state.trades = data.items || [];
@@ -488,6 +567,7 @@ async function route() {
     else if (pageRoute === "strategy") await renderStrategy();
     else if (pageRoute === "chart") await renderChartPage();
     else if (pageRoute === "trades") await renderTrades();
+    else if (pageRoute === "diagnostics") await renderDiagnostics();
     else if (pageRoute === "decisions") await renderDecisions();
     else if (pageRoute === "data") await renderData();
     else if (pageRoute === "reports") await renderReports();
