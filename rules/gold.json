@@ -1,0 +1,101 @@
+{
+  "schema_version": 1,
+  "strategy_name": "comex_gold_futures_placeholder",
+  "strategy_version": "0.1.0",
+  "status": "placeholder",
+  "execution_enabled": false,
+  "description": "PLACEHOLDER ONLY. Structural example for a COMEX gold futures strategy using GC as the primary instrument and MGC as the secondary instrument. No gold strategy has been designed, backtested, or validated. This configuration must not be traded.",
+  "notes": [
+    "Every numeric value in this file is an illustrative placeholder, not a validated trading parameter.",
+    "Active scope is limited to COMEX gold futures GC and MGC. Stock, gold ETF, and gold spot/CFD instruments are not supported targets.",
+    "The session block is a placeholder and is not the source of truth for COMEX market sessions. market_data/gold.py owns the explicitly labelled, currently unverified COMEX schedule.",
+    "Gold analysis records measurements only. It does not define or validate a gold entry rule.",
+    "The entry and exit condition lists are intentionally empty until a strategy is designed and tested.",
+    "The application must reject this configuration for execution while its status is 'placeholder'."
+  ],
+  "supported_instruments": {
+    "universe": "gold_futures",
+    "asset_classes": ["gold_futures"],
+    "symbols": ["GC", "MGC"]
+  },
+  "timeframes": {
+    "signal": "15m",
+    "context": ["1d", "1h"]
+  },
+  "sessions": {
+    "timezone": "America/New_York",
+    "trading_days": ["mon", "tue", "wed", "thu", "fri"],
+    "windows": [
+      {
+        "start": "18:00",
+        "end": "17:00"
+      }
+    ],
+    "entry_cutoff": "16:30",
+    "close_positions_by": "16:55"
+  },
+  "entry_conditions": {
+    "logic": "all",
+    "conditions": [],
+    "notes": "PLACEHOLDER: gold futures entry rules have not been defined."
+  },
+  "exit_conditions": {
+    "logic": "any",
+    "conditions": [],
+    "notes": "PLACEHOLDER: gold futures exit rules have not been defined beyond the stop-loss and take-profit structure."
+  },
+  "position_sizing": {
+    "method": "risk_per_trade",
+    "risk_per_trade_fraction": 0.005,
+    "max_position_notional_fraction": 0.1
+  },
+  "risk_limits": {
+    "max_risk_per_trade_fraction": 0.005,
+    "max_concurrent_positions": 2,
+    "max_daily_loss_fraction": 0.02
+  },
+  "stop_loss": {
+    "method": "atr",
+    "required": true,
+    "parameters": {
+      "atr_period": 14,
+      "atr_multiple": 2.0
+    },
+    "placeholder_values": true
+  },
+  "take_profit": {
+    "method": "r_multiple",
+    "enabled": true,
+    "parameters": {
+      "r_multiple": 1.5
+    },
+    "placeholder_values": true
+  },
+  "opportunity_discovery": {
+    "kind": "gold_analysis",
+    "reference_timeframe": "15m",
+    "previous_close_timeframe": "1d",
+    "previous_close_is_daily": true,
+    "max_data_age_seconds": 300,
+    "min_price": 1.0,
+    "max_price": 100000.0,
+    "required_fields": ["close"],
+    "required_measurements": ["latest_price"],
+    "eligible_sessions": ["open"],
+    "excluded_symbols": [],
+    "require_verified_session": true,
+    "ranking": {
+      "measurements": [
+        {
+          "measurement": "absolute_change_percent",
+          "direction": "descending"
+        },
+        {
+          "measurement": "latest_price",
+          "direction": "descending"
+        }
+      ]
+    }
+  },
+  "strategy_parameters": {}
+}

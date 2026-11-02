@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "trading_mode": "paper",
+  "execution_mode": "paper",
+  "live_trading_enabled": false,
+  "broker_adapter": "paper",
+  "max_risk_per_trade_fraction": 0.005,
+  "max_concurrent_positions": 5,
+  "max_daily_loss_fraction": 0.02,
+  "log_level": "INFO",
+  "market_data_provider": "disabled",
+  "mt5_terminal_path": null
+}

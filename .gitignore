@@ -1,0 +1,37 @@
+# Secrets and machine-specific settings
+.env
+.env.*
+!.env.example
+config/settings.json
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+.venv/
+venv/
+build/
+dist/
+*.egg-info/
+.Python
+
+# Test and tooling caches
+.pytest_cache/
+.coverage
+.coverage.*
+htmlcov/
+.mypy_cache/
+.ruff_cache/
+
+# Runtime output
+logs/
+*.log
+
+# Generated research datasets (immutable run directories, not source)
+research_data/
+
+# Editors and operating systems
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db

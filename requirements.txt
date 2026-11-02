@@ -1,0 +1,10 @@
+# Trantor runtime dependencies.
+# The application uses the Python 3.12+ standard library plus:
+# - tzdata, which supplies IANA timezone data to zoneinfo on Windows.
+# COMEX gold futures sessions are modelled separately and do not use an equity
+# exchange calendar.
+tzdata>=2024.1
+
+# Test tooling. Kept in the single requirements file for this phase so a
+# fresh checkout can run the test suite with one install command.
+pytest>=8.0,<10

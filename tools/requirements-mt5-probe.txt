@@ -1,0 +1,7 @@
+# Diagnostic-only dependency for tools/mt5_readonly_probe.py.
+# This is not a Trantor runtime dependency and is not referenced by
+# pyproject.toml or requirements.txt.
+#
+# MetaTrader5 is a Windows x86-64 binary package and declares numpy>=1.7.
+# The current development environment already has a compatible numpy.
+MetaTrader5==5.0.6231

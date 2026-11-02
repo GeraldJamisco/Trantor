@@ -1,0 +1,68 @@
+{
+  "schema_version": 1,
+  "kind": "gold_analysis_replay",
+  "label": "Synthetic COMEX gold futures replay",
+  "disclaimer": "Synthetic fixture data for deterministic replay tests only. It is not evidence of real-world profitability.",
+  "provider_name": "synthetic-phase3-fixture",
+  "evaluated_at": "2026-10-22T14:30:00Z",
+  "cases": [
+    {
+      "symbol": "GC",
+      "asset_class": "gold_futures",
+      "exchange": "COMEX",
+      "currency": "USD",
+      "timezone": "America/New_York",
+      "reference_timeframe": "15m",
+      "previous_close_timeframe": "1d",
+      "reference": [
+        {
+          "observed_at": "2026-10-22T10:26:00-04:00",
+          "open": 2518.0,
+          "high": 2521.5,
+          "low": 2517.5,
+          "close": 2520.0,
+          "volume": 1500
+        }
+      ],
+      "previous_close": [
+        {
+          "observed_at": "2026-10-21T16:00:00-04:00",
+          "open": 2498.0,
+          "high": 2502.0,
+          "low": 2496.0,
+          "close": 2500.0,
+          "volume": 8000
+        }
+      ]
+    },
+    {
+      "symbol": "MGC",
+      "asset_class": "gold_futures",
+      "exchange": "COMEX",
+      "currency": "USD",
+      "timezone": "America/New_York",
+      "reference_timeframe": "15m",
+      "previous_close_timeframe": "1d",
+      "reference": [
+        {
+          "observed_at": "2026-10-22T10:26:00-04:00",
+          "open": 2520.0,
+          "high": 2523.0,
+          "low": 2519.0,
+          "close": 2522.0,
+          "volume": 2500
+        }
+      ],
+      "previous_close": [
+        {
+          "observed_at": "2026-10-21T16:00:00-04:00",
+          "open": 2498.0,
+          "high": 2502.0,
+          "low": 2496.0,
+          "close": 2500.0,
+          "volume": 12000
+        }
+      ]
+    }
+  ]
+}
