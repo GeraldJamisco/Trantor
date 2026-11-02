@@ -38,6 +38,11 @@ def test_authoritative_diagnostics_reconcile() -> None:
         source["verified"] for source in payload["verification"]["source_checksums"]
     )
 
+    assert list(payload["breakdowns"]["by_split"]) == [
+        "development",
+        "validation",
+        "holdout",
+    ]
     overall = payload["breakdowns"]["overall"]
     assert overall["trade_count"] == 43
     assert overall["win_count"] == 13

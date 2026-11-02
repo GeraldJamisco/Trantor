@@ -493,9 +493,17 @@ class TradeDiagnosticsService:
                 "awarded": _stats(awarded),
                 "not_awarded": _stats(not_awarded),
             }
+        split_groups = defaultdict(list)
+        for row in rows:
+            split_groups[row["split"]].append(row)
+        by_split = {
+            name: _stats(split_groups[name])
+            for name in SPLIT_ORDER
+            if name in split_groups
+        }
         return {
             "overall": _stats(rows),
-            "by_split": self._group(rows, "split", lambda row: row["split"]),
+            "by_split": by_split,
             "by_side": self._group(rows, "side", lambda row: row["side"]),
             "by_score": self._group(rows, "score", lambda row: row["score"]),
             "by_exit_classification": self._group(

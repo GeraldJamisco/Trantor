@@ -45,12 +45,16 @@ HTML/CSS/JS. The decision history is indexed and paginated on the server; all
 
 Implemented views: Dashboard, Research & Backtest, Strategy, Market Chart, Trade
 Explorer, Decision History, Data & Datasets, Reports & Results, System & Safety,
-and Configuration. The UI is read-only. It does not include order controls,
-broker settings, account data, live prices, or execution controls.
+and Configuration. The read-only Trade Diagnostics view exposes the Phase F
+trade-level analysis, including the 2025 validation focus, MFE/MAE approximations,
+exit reconciliation, and ambiguous stop-first events. The UI is read-only. It
+does not include order controls, broker settings, account data, live prices, or
+execution controls.
 
 Intentionally deferred from this first version: live market data, account
-balances, order lifecycle, demo/live controls, strategy optimization, trade-level
-diagnostic analysis, multi-user authentication, and persistent UI state.
+balances, order lifecycle, demo/live controls, strategy optimization,
+multi-user authentication, and persistent UI state. The Phase F trade-level
+diagnostic report is at `docs/strategy/phase_f_trade_diagnostics.md`.
 
 The repository currently contains **Phases 1 through 3**, the XAUUSD-P research
 engine and completed Phase E artifacts, and a read-only local research dashboard.
@@ -609,5 +613,6 @@ Phase 4 — strategy evaluation, risk sizing, and a paper execution adapter — 
 not been started. Phase 3 deliberately stops at research candidates and
 measurements. Any later phase must preserve the Phase 1 safety gates, consume
 these results through an explicit strategy contract, and continue to avoid live
-orders, broker connections, automated execution, Telegram, dashboards, and
-scheduled trading loops until they are separately designed and reviewed.
+orders, broker connections, automated execution, Telegram, and scheduled trading
+loops until they are separately designed and reviewed. The read-only research
+dashboard is documented above.
