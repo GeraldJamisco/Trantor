@@ -12,10 +12,50 @@ futures**. The active target is **GC**, with **MGC** as the secondary supported
 contract. The earlier multi-market scope has been retired; this README describes
 the current gold-futures system only.
 
-The repository currently contains **Phases 1 through 3**: foundation, market
-data and sessions, and broker-independent gold research analysis. It is not yet a
-strategy-evaluation engine, trading loop, broker client, execution engine,
-scheduler, notification system, or dashboard.
+## Research dashboard
+
+The repository includes a local, read-only browser dashboard for the completed
+authoritative XAUUSD-P Phase E experiment. It reads the actual artifacts under
+`research_results/xauusd_p/phase_e_authoritative_20261102/` and does not start a
+backtest, connect to a broker, or submit orders.
+
+Start it from PowerShell at the repository root:
+
+```powershell
+$env:PYTHONPATH='src'
+python -m trantor.dashboard
+```
+
+Open:
+
+```text
+http://127.0.0.1:8765/
+```
+
+Use `Ctrl+C` in the terminal to stop it. Optional arguments:
+
+```text
+python -m trantor.dashboard --host 127.0.0.1 --port 8765
+python -m trantor.dashboard --artifacts research_results/xauusd_p/phase_e_authoritative_20261102
+```
+
+The dashboard uses only the Python standard library and packaged static
+HTML/CSS/JS. The decision history is indexed and paginated on the server; all
+66,395 decision records are never sent to the browser at once.
+
+Implemented views: Dashboard, Research & Backtest, Strategy, Market Chart, Trade
+Explorer, Decision History, Data & Datasets, Reports & Results, System & Safety,
+and Configuration. The UI is read-only. It does not include order controls,
+broker settings, account data, live prices, or execution controls.
+
+Intentionally deferred from this first version: live market data, account
+balances, order lifecycle, demo/live controls, strategy optimization, trade-level
+diagnostic analysis, multi-user authentication, and persistent UI state.
+
+The repository currently contains **Phases 1 through 3**, the XAUUSD-P research
+engine and completed Phase E artifacts, and a read-only local research dashboard.
+It is not yet a strategy-evaluation engine, trading loop, broker client,
+execution engine, scheduler, or notification system.
 
 No strategy in this repository is validated. The shipped rule file is an
 explicit placeholder with execution disabled, and the safety layer rejects it
@@ -93,9 +133,10 @@ types are rejected by the active gold configuration before analysis.
 - Deterministic, offline replay fixtures. Replay observations still pass through
   `MarketDataService` and its Phase 2 validation before reaching the analyzer.
 
-Not implemented: strategy entry/exit logic, indicators, risk sizing, broker
-connection, order submission, live trading, NinjaTrader integration,
-notifications, dashboard, backtesting, and the scheduled trading loop.
+Not implemented in the live-execution path: broker connection, order submission,
+live trading, NinjaTrader integration, notifications, and the scheduled trading
+loop. Strategy research and the Phase E historical backtester are implemented
+separately; the dashboard is a read-only research view.
 
 ## Safety invariants
 
@@ -163,8 +204,8 @@ disabled.
 4. Strategy evaluation, risk sizing, and a paper execution adapter (not started).
 5. MT5 read-only market-data integration (Gate 1, complete); execution remains
    disabled.
-6. Scheduled cycles, position management, notifications, and dashboard (not
-   started).
+6. Scheduled cycles, position management, and notifications (not started).
+   The read-only research dashboard is implemented separately.
 
 TradingView is not a dependency.
 
@@ -179,6 +220,7 @@ src/trantor/
   config.py                       Strict JSON loaders and typed configuration
   models.py                       Typed domain models and order lifecycle states
   safety.py                       Execution gate, order authorizer, redaction
+  dashboard/                      Read-only local browser research dashboard
   strategy/__init__.py            Signal-only strategy protocol
   market_data/
     contracts.py                  Requests, capabilities, results, freshness

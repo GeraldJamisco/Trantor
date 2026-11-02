@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <title>Trantor Research Terminal</title>
+  <link rel="icon" href="/assets/trantor-mark.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/assets/app.css">
+</head>
+<body>
+  <svg class="sprite" aria-hidden="true" focusable="false">
+    <symbol id="i-home" viewBox="0 0 24 24"><path d="M3 10.8 12 3l9 7.8v9.7a1 1 0 0 1-1 1h-5.2v-6.2H9.2v6.2H4a1 1 0 0 1-1-1z"/></symbol>
+    <symbol id="i-research" viewBox="0 0 24 24"><path d="M4 19V5m5 14V9m5 10V3m5 16v-7"/></symbol>
+    <symbol id="i-strategy" viewBox="0 0 24 24"><path d="M5 4v16M5 7h8a4 4 0 0 1 0 8H9a4 4 0 0 0 0 8h10"/><circle cx="17" cy="5" r="2"/></symbol>
+    <symbol id="i-chart" viewBox="0 0 24 24"><path d="M4 19.5V4.5M4 19.5h16"/><path d="m7 15 3-4 3 2 4-6"/></symbol>
+    <symbol id="i-layers" viewBox="0 0 24 24"><path d="m12 3 9 5-9 5-9-5 9-5Z"/><path d="m3 12 9 5 9-5M3 16l9 5 9-5"/></symbol>
+    <symbol id="i-file" viewBox="0 0 24 24"><path d="M6 3h8l4 4v14H6z"/><path d="M14 3v5h4M9 13h6M9 17h6"/></symbol>
+    <symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 3 20 6v5c0 5-3.4 8.5-8 10-4.6-1.5-8-5-8-10V6z"/><path d="m8.5 12 2.3 2.3 4.8-5"/></symbol>
+    <symbol id="i-sliders" viewBox="0 0 24 24"><path d="M4 7h10M18 7h2M4 17h2M10 17h10"/><circle cx="16" cy="7" r="2"/><circle cx="8" cy="17" r="2"/></symbol>
+    <symbol id="i-list" viewBox="0 0 24 24"><path d="M8 6h12M8 12h12M8 18h12"/><path d="M4 6h.01M4 12h.01M4 18h.01"/></symbol>
+    <symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 10v6M12 7h.01"/></symbol>
+    <symbol id="i-candles" viewBox="0 0 24 24"><path d="M7 4v3M7 17v3M17 3v4M17 16v5"/><rect x="4.5" y="7" width="5" height="10" rx="1"/><rect x="14.5" y="7" width="5" height="9" rx="1"/></symbol>
+  </svg>
+
+  <div class="shell">
+    <aside class="sidebar" id="sidebar">
+      <div class="brand">
+        <img class="brand-mark" src="/assets/trantor-mark.svg" alt="">
+        <div class="brand-copy">
+          <div class="brand-name">TRANTOR</div>
+          <div class="brand-sub">RESEARCH TERMINAL</div>
+        </div>
+      </div>
+      <div class="brand-rule"></div>
+      <nav class="nav" aria-label="Primary navigation">
+        <a class="nav-item" href="#/dashboard" data-route="dashboard"><svg><use href="#i-home"/></svg><span>Dashboard</span></a>
+        <a class="nav-item" href="#/research" data-route="research"><svg><use href="#i-research"/></svg><span>Research &amp; Backtest</span></a>
+        <a class="nav-item" href="#/strategy" data-route="strategy"><svg><use href="#i-strategy"/></svg><span>Strategy</span></a>
+        <a class="nav-item" href="#/chart" data-route="chart"><svg><use href="#i-candles"/></svg><span>Market Chart</span></a>
+        <a class="nav-item" href="#/trades" data-route="trades"><svg><use href="#i-list"/></svg><span>Trade Explorer</span></a>
+        <a class="nav-item" href="#/decisions" data-route="decisions"><svg><use href="#i-file"/></svg><span>Decision History</span></a>
+        <a class="nav-item" href="#/data" data-route="data"><svg><use href="#i-layers"/></svg><span>Data &amp; Datasets</span></a>
+        <a class="nav-item" href="#/reports" data-route="reports"><svg><use href="#i-file"/></svg><span>Reports &amp; Results</span></a>
+        <a class="nav-item" href="#/system" data-route="system"><svg><use href="#i-shield"/></svg><span>System &amp; Safety</span></a>
+        <a class="nav-item" href="#/config" data-route="config"><svg><use href="#i-sliders"/></svg><span>Configuration</span></a>
+      </nav>
+      <div class="sidebar-footer">
+        <div class="safe-dot"></div>
+        <div>
+          <div class="sidebar-footer-title">READ-ONLY RESEARCH</div>
+          <div class="sidebar-footer-sub">No order path connected</div>
+        </div>
+      </div>
+    </aside>
+
+    <div class="workspace">
+      <header class="topbar">
+        <div class="topbar-left">
+          <button class="mobile-menu" id="sidebar-toggle" aria-label="Toggle navigation">☰</button>
+          <div class="topbar-title">TRANTOR <span>XAUUSD-P Research &amp; Trading System</span></div>
+        </div>
+        <div class="topbar-status" aria-label="Application status">
+          <span class="top-pill"><span class="pill-label">Mode</span><span class="pill-value" id="top-mode">Research</span></span>
+          <span class="top-pill"><span class="pill-label">Execution</span><span class="pill-value disabled" id="top-execution">Disabled</span></span>
+          <span class="top-pill instrument-pill" id="top-instrument">XAUUSD-P</span>
+          <span class="top-pill"><span class="pill-label">Version</span><span class="pill-value" id="top-version">0.1.0</span></span>
+          <a class="icon-button" href="#/system" title="System status" aria-label="System status"><svg><use href="#i-info"/></svg></a>
+        </div>
+      </header>
+
+      <main class="main" id="page">
+        <div class="loading-state">
+          <div class="spinner"></div>
+          <div>Loading authoritative research artifacts…</div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <script src="/assets/app.js" defer></script>
+</body>
+</html>
