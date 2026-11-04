@@ -181,4 +181,5 @@ New limitations recorded by this programme:
 | L-16 | Paper/shadow exits use the M15 bar model (stop-first), not ticks | paper results are a forward test of the research fill model, not of broker execution |
 | L-17 | Paper P/L is `R × risk amount`; no volume rounding, spread, commission or swap | paper results are gross |
 | L-18 | Runtime database grows ~5.6 KB per decision (~134 MB/year) | archival policy needed for long operation |
-| L-19 | Live shadow observation in this programme covered hours, not multiple full sessions | shadow acceptance not yet complete |
+| L-19 | Live shadow observation in this programme covered one trading day (10:45–16:40 UTC), not multiple sessions | shadow acceptance not yet complete |
+| L-20 | Runtime working-set memory grew 15→30 MB over ~5 h; plateau unconfirmed | watch in multi-day run |

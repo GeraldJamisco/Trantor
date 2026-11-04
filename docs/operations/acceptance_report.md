@@ -79,7 +79,22 @@ No parameter was changed in this programme.
 
 ## 4. Live evidence (2026-11-04)
 
-LIVE_EVIDENCE_PLACEHOLDER
+Window 10:45–16:40 UTC on the demo feed, including the full London/New York
+overlap. Details: `shadow_and_paper_report.md`.
+
+| Measure | Shadow | Paper |
+|---|---:|---:|
+| Bar closes evaluated / expected | 24 / 24 | 22 / 22 |
+| Median evaluation delay after bar close | 1.9 s | 2.5 s |
+| Decisions reproduced from broker history (identical hash) | 24 / 24 | 22 / 22 |
+| Duplicate decisions / step errors | 0 / 0 | 0 / 0 |
+| Real broker disconnects → automatic recovery | 3 → 3 (37 s, 13 s, 1 s) | 2 → 2 |
+| Hard-kill crash tests → clean restart | 2 → 2 | 1 → 1 |
+| Candidates / positions / orders | 0 / 0 / 0 | 0 / 0 / 0 |
+| Rejection mix | 100% `d1_conflict` | 100% `d1_conflict` |
+
+No candidate occurred, so no live candidate-to-exit lifecycle has been observed.
+That lifecycle is verified only on historical replay.
 
 ## 5. What remains blocked, and by whom
 

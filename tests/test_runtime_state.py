@@ -471,9 +471,9 @@ def test_missing_symbol_info() -> None:
 
 
 def test_usd_base_cfd_convention_accepted_only_with_gold_identity() -> None:
-    report = _report(currency_base="USD", description="Gold vs USD", path="Metal-P\XAUUSD-P")
+    report = _report(currency_base="USD", description="Gold vs USD", path=r"Metal-P\XAUUSD-P")
     assert report.check("identity.currencies").status is CheckStatus.OBSERVED
     assert "description and path" in report.check("identity.currencies").detail
-    silver = _report(currency_base="USD", description="Silver vs USD", path="Metal-P\XAGUSD-P")
+    silver = _report(currency_base="USD", description="Silver vs USD", path=r"Metal-P\XAGUSD-P")
     assert silver.check("identity.currencies").status is CheckStatus.MISMATCH
     assert _report(currency_profit="EUR").check("identity.currencies").status is CheckStatus.MISMATCH

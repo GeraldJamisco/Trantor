@@ -145,3 +145,21 @@ Built (all new; no strategy rule, dataset or baseline changed):
   also with 59 restarts. Details: `testing_report.md`.
 - Live: `verify-broker` on the demo terminal; shadow runtime continuously from
   10:58 UTC; 20-minute live paper mechanics run in parallel.
+
+## Entry 5 — 2026-11-04 — Live window results and late fixes
+
+- Live shadow and paper ran through the London/New York overlap: 46 decisions,
+  100% bar coverage, all 46 reproduced from broker history with identical
+  hashes, 3 real broker disconnects recovered automatically, 0 step errors.
+  All decisions were `d1_conflict`; no candidate occurred.
+- **Defect (fixed):** decisions rejected before the session step were shown as
+  "outside session" (the strategy's "not evaluated" placeholder carries
+  `in_overlap=False`). The envelope now records `evaluated`/`iana_overlap=None`,
+  and the dashboard shows "not evaluated". Canonical records are unchanged.
+  Regression test added.
+- **Change:** each runtime now logs to `logs/<state dir>/` so two runtimes never
+  rotate the same file.
+- **Watch item (L-20):** working-set memory grew 15→23 MB (shadow) and 16→30 MB
+  (paper) over ~5 h; whether it plateaus must be confirmed in the multi-day run.
+- Step 2 (M15 history extension) prepared, not started, per owner decision:
+  `docs/strategy/step2_history_extension_plan.md`.

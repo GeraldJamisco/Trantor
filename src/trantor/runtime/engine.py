@@ -461,8 +461,15 @@ class DecisionEngine:
                 "entry_lateness_seconds": lateness,
             },
             "news": inputs.news.as_dict(),
+            # A decision rejected before the session step carries the strategy's
+            # "not evaluated" placeholder; report that, not "outside session".
             "session": {
-                "iana_overlap": decision.session.in_overlap,
+                "evaluated": decision.session.reason != "not evaluated",
+                "iana_overlap": (
+                    decision.session.in_overlap
+                    if decision.session.reason != "not evaluated"
+                    else None
+                ),
                 "broker_calendar_verified": False,
                 "reason": decision.session.reason,
             },

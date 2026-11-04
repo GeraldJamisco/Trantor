@@ -339,3 +339,20 @@ def test_status_snapshot_contains_no_secrets(tmp_path: Path, monkeypatch) -> Non
         assert "12345678" not in text
     finally:
         runtime.shutdown("test")
+
+
+@needs_data
+def test_early_rejection_reports_session_not_evaluated(data, tmp_path: Path) -> None:
+    from trantor.strategy.xauusd_p import XAUUSDPMultiTimeframeStrategy
+
+    _replay(data, tmp_path, strategy=XAUUSDPMultiTimeframeStrategy())
+    rows = load_runtime_decisions(tmp_path / "trantor_runtime.sqlite3")
+    early = [r for r in rows if json.loads(r["rejection_codes"]) in (["d1_conflict"], ["h4_neutral"], ["m15_gap"])]
+    assert early
+    for row in early:
+        session = json.loads(row["envelope_json"])["session"]
+        assert session["evaluated"] is False and session["iana_overlap"] is None
+    late = [r for r in rows if json.loads(r["rejection_codes"]) == ["session_outside"]]
+    for row in late:
+        session = json.loads(row["envelope_json"])["session"]
+        assert session["evaluated"] is True and session["iana_overlap"] is False

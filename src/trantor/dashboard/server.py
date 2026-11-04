@@ -177,6 +177,15 @@ class DashboardRequestHandler(BaseHTTPRequestHandler):
         raise DashboardError("not found", 404)
 
     def _method_not_allowed(self) -> None:
+        # Drain (a bounded amount of) any request body before replying so the
+        # client can read the 405; unread data makes Windows reset the socket.
+        try:
+            length = int(self.headers.get("Content-Length") or 0)
+        except ValueError:
+            length = 0
+        if 0 < length <= 65_536:
+            self.rfile.read(length)
+        self.close_connection = True
         self._send_json(
             HTTPStatus.METHOD_NOT_ALLOWED,
             {"error": "the dashboard is read-only; only GET is supported"},

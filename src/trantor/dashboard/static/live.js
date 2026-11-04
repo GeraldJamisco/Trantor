@@ -188,7 +188,7 @@ async function loadSignalDetail(id) {
         ["Prev. day high / low", rec.daily_bias ? `${fmt(rec.daily_bias.previous_high)} / ${fmt(rec.daily_bias.previous_low)}` : "—"],
         ["H4 trend", esc(rec.h4_trend?.state || "—")], ["H4 ATR14", fmt(rec.h4_trend?.atr)],
         ["H4 zone", rec.zone ? `${fmt(rec.zone.lower)} – ${fmt(rec.zone.upper)} (${esc((rec.zone.evidence || []).join(", "))})` : "—"],
-        ["Session (IANA overlap)", env.session ? badge(env.session.iana_overlap ? "inside" : "outside") : "—"],
+        ["Session (IANA overlap)", !env.session ? "—" : (env.session.evaluated === false || env.session.reason === "not evaluated") ? badge("not evaluated (rejected earlier)", "blue") : badge(env.session.iana_overlap ? "inside" : "outside")],
         ["News", `${badge(env.news?.status || "unknown")} ${esc(env.news?.reason || "")}`],
         ["Rejections", esc((env.rejections || []).map((r) => `${r.code}: ${r.message}`).join(" | ") || "none")],
       ])}</div>
