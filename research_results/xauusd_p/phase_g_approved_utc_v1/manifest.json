@@ -1,0 +1,200 @@
+{
+  "assumptions": [
+    "Timestamps are dataset_time; absolute UTC provenance is unverified.",
+    "Only completed bars whose close is at or before the decision time are used.",
+    "Entry reference is the next M15 open; trigger-close fills are not used.",
+    "Ambiguous same-bar stop/target outcomes use conservative stop-first.",
+    "Gap-through-stop fills at the open; gap-through-target fills at the target.",
+    "At most one target event is credited per bar; TP2 is inactive before TP1.",
+    "TP1 uses the configured fraction; TP2 closes the remaining fraction.",
+    "Breakeven moves the remaining stop to entry after TP1.",
+    "Open or truncated positions are reported without inventing a close.",
+    "Results are gross price/R only; execution costs are excluded.",
+    "No monetary sizing, account-equity return, or profitability claim is made."
+  ],
+  "config_fingerprint": "dbcaf990c1742c57d5d81e9cb873eacfa274c80df326f27e3f5ce60b25866f32",
+  "costs": {
+    "commission_applied": false,
+    "costs_applied": false,
+    "financing_applied": false,
+    "gross_only": true,
+    "monetary_metrics": "unavailable",
+    "net_profitability": "not_claimed",
+    "observed_spread_applied": false,
+    "slippage_applied": false
+  },
+  "counts": {
+    "decision_count": 66403,
+    "decision_record_count": 66403,
+    "filled_trade_count": 23,
+    "trades_with_decision_hash": 23
+  },
+  "harness_version": "phase_e_backtest_1.0",
+  "instrument_profile": {
+    "asset_class": "unverified_gold",
+    "contract_economics_verified": false,
+    "currency": "USD",
+    "exchange": "BROKER",
+    "product_identity_verified": false,
+    "profile_id": "xauusd_p_broker_gold_v1",
+    "session_scope": "xauusd_research_unverified",
+    "source": "Fortune Prime Limited MT5 symbol XAUUSD-P; product identity and contract economics are not verified",
+    "symbol": "XAUUSD-P",
+    "timezone": "UTC"
+  },
+  "labels": {
+    "gross": "GROSS BASELINE - EXECUTION COSTS EXCLUDED",
+    "research": "COMPLETE APPROVED STRATEGY xauusd_p_approved_v1 - IANA SESSION FILTER ACTIVE - NEWS-UNAWARE (NO HISTORICAL CALENDAR) - RESEARCH ONLY",
+    "time": "UTC VIA INFERRED BROKER DST RULE - NOT BROKER-CONFIRMED"
+  },
+  "limitations": [
+    "dataset_time uses unverified absolute-UTC provenance",
+    "research-only filter variant, not the complete approved strategy",
+    "session and news compliance are not claimed",
+    "gross price/R only; execution costs are excluded",
+    "spread adjustment is blocked",
+    "monetary sizing and account-equity returns are unavailable",
+    "M15 OHLC cannot establish intrabar tick paths",
+    "partial-exit volume feasibility is blocked",
+    "fewer than 30 closed trades per split is inconclusive"
+  ],
+  "manifest_version": "phase_e_manifest_1.0",
+  "record_contract": {
+    "authoritative": true,
+    "canonical_records_enabled": true,
+    "decision_source": "StrategyDecision",
+    "schema": "trantor.research_decision",
+    "schema_version": "1.0"
+  },
+  "sources": [
+    {
+      "checksum_sha256": "3847390c3cdde0c98ea22bcab4d099cbab4ef17a8d73eb27c2c502819b0299d6",
+      "first_observation": "2010-01-04T00:00:00+00:00",
+      "label": "d1_warmup",
+      "last_observation": "2026-10-21T00:00:00+00:00",
+      "path": "C:\\xampp\\htdocs\\Trantor\\research_data\\xauusd_p\\runs\\20261022T194021Z\\candles.csv",
+      "row_count": 4331,
+      "timeframe": "1d"
+    },
+    {
+      "checksum_sha256": "353a2452d01248e12973d6c17f93de6c3f7979aa089b7783d36d048182864947",
+      "first_observation": "2024-01-02T00:00:00+00:00",
+      "label": "d1_final",
+      "last_observation": "2026-10-21T00:00:00+00:00",
+      "path": "C:\\xampp\\htdocs\\Trantor\\research_data\\xauusd_p\\runs\\20261022T205633Z\\candles.csv",
+      "row_count": 725,
+      "timeframe": "1d"
+    },
+    {
+      "checksum_sha256": "70558ae65a4ce9869129f44e32c0fac2378f5b07bedd8dac812a337fd3a84fa4",
+      "first_observation": "2024-01-02T00:00:00+00:00",
+      "label": "h4_final",
+      "last_observation": "2026-10-22T16:00:00+00:00",
+      "path": "C:\\xampp\\htdocs\\Trantor\\research_data\\xauusd_p\\runs\\20261022T205633Z-01\\candles.csv",
+      "row_count": 4352,
+      "timeframe": "4h"
+    },
+    {
+      "checksum_sha256": "4b10429e2ad681bed78c65f66a1858604bea2388af8354276200515768d31535",
+      "first_observation": "2024-01-02T01:00:00+00:00",
+      "label": "m15_final",
+      "last_observation": "2026-10-22T20:30:00+00:00",
+      "path": "C:\\xampp\\htdocs\\Trantor\\research_data\\xauusd_p\\runs\\20261022T205651Z\\candles.csv",
+      "row_count": 66475,
+      "timeframe": "15m"
+    }
+  ],
+  "splits": [
+    {
+      "end": "2024-12-31T23:59:59.999999+00:00",
+      "name": "development",
+      "start": "2024-01-01T00:00:00+00:00"
+    },
+    {
+      "end": "2025-12-31T23:59:59.999999+00:00",
+      "name": "validation",
+      "start": "2025-01-01T00:00:00+00:00"
+    },
+    {
+      "end": "2026-10-21T23:59:59.999999+00:00",
+      "name": "holdout",
+      "start": "2026-01-01T00:00:00+00:00"
+    }
+  ],
+  "strategy": {
+    "name": "xauusd_p_multi_timeframe",
+    "parameters": {
+      "cooldown_after_loss_m15": 16,
+      "cooldown_after_two_losses_m15": 32,
+      "d1_max_staleness_days": 5.0,
+      "daily_ema_fast": 50,
+      "daily_ema_slow": 200,
+      "daily_ema_tolerance_pct": 0.0005,
+      "daily_loss_limit": 0.03,
+      "daily_min_bars": 201,
+      "engulf_min_body_fraction": 0.2,
+      "fib_band_atr": 0.25,
+      "fib_levels": [
+        0.5,
+        0.618
+      ],
+      "fib_max_age_h4": 120,
+      "fib_min_leg_atr": 1.0,
+      "h4_atr_period": 14,
+      "h4_max_staleness_hours": 72.0,
+      "h4_pivot_left": 2,
+      "h4_pivot_right": 2,
+      "london_end": "16:30:00",
+      "london_start": "08:00:00",
+      "m15_contiguous_bars": 21,
+      "m15_rsi_long_threshold": 30.0,
+      "m15_rsi_period": 14,
+      "m15_rsi_short_threshold": 70.0,
+      "m15_rsi_window": 1,
+      "max_concurrent_positions": 2,
+      "max_daily_entries": 3,
+      "max_entry_distance_atr": 0.5,
+      "max_stop_atr": 3.0,
+      "min_stop_ticks": 1,
+      "min_tp2_r": 2.5,
+      "new_york_end": "17:00:00",
+      "new_york_start": "08:00:00",
+      "news_calendar_max_age_minutes": 15,
+      "news_post_minutes": 30,
+      "news_pre_minutes": 30,
+      "news_score_window_minutes": 60,
+      "pin_body_range_max": 0.35,
+      "pin_close_position": 0.5,
+      "pin_wick_body_ratio": 2.0,
+      "risk_high_confidence": 0.01,
+      "risk_medium_confidence": 0.005,
+      "score_high_confidence": 7,
+      "score_reject_below": 5,
+      "sr_merge_atr": 0.5,
+      "sr_zone_half_width_atr": 0.25,
+      "stop_buffer_atr": 0.25,
+      "target_obstacle_buffer_atr": 0.25,
+      "tick_size": 0.01,
+      "tp1_r": 2.0,
+      "tp2_r": 3.0,
+      "volume_lookback_m15": 20,
+      "volume_multiplier": 1.5,
+      "zone_invalidation_atr": 0.25,
+      "zone_max_age_h4": 120
+    },
+    "research_only": true,
+    "variant_id": "xauusd_p_approved_v1",
+    "variant_name": "approved",
+    "version": "1.0.0"
+  },
+  "time_semantics": {
+    "coordinate": "utc_inferred",
+    "evidence": [
+      "live tick-vs-host measurement 2026-11-04: UTC+2",
+      "daily break 00:00-01:00 server in all DST regimes incl. US-on/EU-off weeks",
+      "weekly open Monday 01:00 server = Sunday 18:00 New York"
+    ],
+    "rule": "broker server time = America/New_York local time + 7 h (inferred)",
+    "split_boundaries": "split windows are evaluated in UTC (Phase E used dataset_time)"
+  }
+}

@@ -1,5 +1,18 @@
 # XAUUSD-P Multi-Timeframe Strategy Specification
 
+> **Implementation identity (note added 2026-11-04).** The rules below were
+> approved during Phase D (see `phase_d_implementation_audit.md`) and are
+> implemented without change as:
+>
+> | Identity | Strategy name | Version | Session filter | News | Used by |
+> |---|---|---|---|---|---|
+> | `xauusd_p_approved_v1` | `xauusd_p_multi_timeframe` | 1.0.0 | IANA London/NY overlap (active) | verified calendar, or labelled `news_unaware` in research/shadow/paper | live runtime, Phase G |
+> | `xauusd_p_filter_isolated_v1` | `xauusd_p_multi_timeframe_research_filter_isolated` | 1.0.0 | isolated (not applied) | always `news_unaware` | Phase E/F baseline only |
+>
+> Phase E/F results belong to the filter-isolated variant and do not validate
+> the approved strategy. The text below is the original Phase C document and its
+> status line is historical.
+
 - **Version:** 1.0-draft
 - **Status:** Phase C proposal — awaiting review; not approved for implementation
 - **Instrument:** `XAUUSD-P` only

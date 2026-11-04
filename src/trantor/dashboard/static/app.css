@@ -291,3 +291,24 @@ details.raw-details summary { cursor: pointer; color: var(--blue-pale); font-siz
   .sidebar { width: 58px; flex-basis: 58px; }
   .brand-mark { width: 30px; height: 30px; }
 }
+
+/* Operations views */
+.nav-section { color: var(--muted-2); font-size: 9px; letter-spacing: .16em; text-transform: uppercase; padding: 12px 12px 4px; }
+.label-chip.green { border-color: #2a6b4a; background: #10301f; color: #b6f3cf; }
+.label-chip.amber { border-color: #6e5626; background: #2e2412; color: #ffe0a3; }
+.label-chip.blue { border-color: #2a5279; background: #0b2238; color: #b8d7f2; }
+.live-strip { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 14px; }
+.quote-value { font-size: 26px; font-weight: 750; letter-spacing: -0.01em; font-variant-numeric: tabular-nums; }
+.quote-row { display: flex; gap: 22px; align-items: baseline; flex-wrap: wrap; }
+.factor-row { display: grid; grid-template-columns: 1fr auto auto; gap: 10px; padding: 7px 0; border-bottom: 1px solid var(--line); font-size: 12px; }
+.factor-row:last-child { border-bottom: 0; }
+.meter { height: 8px; border-radius: 6px; background: #10253d; overflow: hidden; margin-top: 8px; }
+.meter > span { display: block; height: 100%; background: var(--green); }
+.meter.amber > span { background: var(--amber); }
+.meter.red > span { background: var(--red); }
+tr.clickable { cursor: pointer; }
+tr.clickable:hover td { background: #0f2238; }
+.event-level { font-size: 10px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; }
+.event-level.critical, .event-level.error { color: var(--red); }
+.event-level.warning { color: var(--amber); }
+.event-level.info { color: var(--muted); }

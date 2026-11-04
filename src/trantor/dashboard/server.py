@@ -1,4 +1,10 @@
-"""Minimal read-only HTTP server for the Trantor research dashboard."""
+"""Minimal read-only HTTP server for the Trantor dashboard.
+
+Research views read the immutable Phase E/F artifacts; live views read the
+runtime SQLite database opened read-only. Every endpoint is GET-only: the
+dashboard cannot submit orders, change settings, or engage/release the
+emergency stop (use ``python -m trantor.runtime stop-entries`` for that).
+"""
 
 from __future__ import annotations
 
@@ -9,6 +15,7 @@ from pathlib import Path
 from urllib.parse import parse_qs, unquote, urlsplit
 
 from .data import DashboardConfig, DashboardError, ResearchRepository
+from .runtime_data import RuntimeRepository, experiments_payload
 
 STATIC_DIR = Path(__file__).resolve().parent / "static"
 STATIC_FILES = {
@@ -16,6 +23,7 @@ STATIC_FILES = {
     "/index.html": ("index.html", "text/html; charset=utf-8"),
     "/assets/app.css": ("app.css", "text/css; charset=utf-8"),
     "/assets/app.js": ("app.js", "text/javascript; charset=utf-8"),
+    "/assets/live.js": ("live.js", "text/javascript; charset=utf-8"),
     "/assets/trantor-mark.svg": ("trantor-mark.svg", "image/svg+xml"),
 }
 
@@ -24,6 +32,7 @@ class DashboardRequestHandler(BaseHTTPRequestHandler):
     """Serve the dashboard shell and read-only JSON endpoints."""
 
     repository: ResearchRepository
+    runtime: RuntimeRepository
     server_version = "TrantorDashboard/0.1"
     sys_version = ""
 
@@ -124,6 +133,13 @@ class DashboardRequestHandler(BaseHTTPRequestHandler):
             if path == "/api/config":
                 self._send_json(HTTPStatus.OK, self.repository.config_payload())
                 return
+            if path == "/api/experiments":
+                root = self.repository.config.repo_root / "research_results" / "xauusd_p"
+                self._send_json(HTTPStatus.OK, experiments_payload(root))
+                return
+            if path.startswith("/api/live/"):
+                self._send_json(HTTPStatus.OK, self._live(path[len("/api/live/") :]))
+                return
             if path == "/api/candles":
                 self._send_json(
                     HTTPStatus.OK,
@@ -141,6 +157,24 @@ class DashboardRequestHandler(BaseHTTPRequestHandler):
                 HTTPStatus.INTERNAL_SERVER_ERROR,
                 {"error": "dashboard request failed"},
             )
+
+    def _live(self, endpoint: str) -> object:
+        query = self._query()
+        if endpoint == "status":
+            return self.runtime.status()
+        if endpoint == "candles":
+            return self.runtime.candles(query.get("tf", "15m"))
+        if endpoint == "decisions":
+            return self.runtime.decisions(query)
+        if endpoint.startswith("decisions/"):
+            return self.runtime.decision_detail(unquote(endpoint[len("decisions/") :]))
+        if endpoint == "positions":
+            return self.runtime.positions()
+        if endpoint == "risk":
+            return self.runtime.risk()
+        if endpoint == "health":
+            return self.runtime.health(query)
+        raise DashboardError("not found", 404)
 
     def _method_not_allowed(self) -> None:
         self._send_json(
@@ -166,13 +200,20 @@ def build_server(
     *,
     host: str = "127.0.0.1",
     port: int = 8765,
+    runtime_db: Path | None = None,
 ) -> ThreadingHTTPServer:
     """Build a local server without starting it."""
 
     repository = ResearchRepository(config)
+    resolved = config or DashboardConfig.default()
+    state_dir = resolved.repo_root / "state"
+    runtime = RuntimeRepository(
+        runtime_db or state_dir / "trantor_runtime.sqlite3",
+        kill_switch_path=state_dir / "EMERGENCY_STOP",
+    )
     handler = type(
         "BoundDashboardRequestHandler",
         (DashboardRequestHandler,),
-        {"repository": repository},
+        {"repository": repository, "runtime": runtime},
     )
     return ThreadingHTTPServer((host, port), handler)

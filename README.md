@@ -1,6 +1,41 @@
 # Trantor
 
-> **Current implementation note (2026-11-02):** The active strategy and research
+## Current state (2026-11-04)
+
+Trantor is an XAUUSD-P (Fortune Prime MT5, gold CFD) research and trading
+system. It observes live market data, evaluates the approved multi-timeframe
+strategy (`xauusd_p_approved_v1`), records every decision canonically, and runs
+**shadow** (hypothetical) or **paper** (in-process simulated) trading.
+**No broker order can be sent**: demo and live execution are not implemented and
+are refused by the execution gate.
+
+| Command (PowerShell, `$env:PYTHONPATH='src'`) | Purpose |
+|---|---|
+| `python -m trantor.runtime verify-broker` | Read-only broker metadata verification |
+| `python -m trantor.runtime run` | Live shadow/paper runtime (mode from `config/settings.json`) |
+| `python -m trantor.runtime stop-entries --reason "..."` | Emergency stop (entries only; positions still managed) |
+| `python -m trantor.dashboard` | Read-only dashboard at http://127.0.0.1:8765/ |
+| `python -m trantor.research.experiments` | Versioned research experiment (Phase G) |
+| `python -m pytest` | Test suite |
+
+Documentation:
+
+- Operator guide and Windows setup: `docs/operations/operator_guide.md`
+- Final acceptance report: `docs/operations/acceptance_report.md`
+- Broker verification: `docs/operations/broker_verification_report.md`
+- Implementation and testing log: `docs/operations/implementation_log.md`
+- Strategy rules: `docs/strategy/xauusd_p_strategy_spec_v1.md`
+
+Owner actions still required before any monetary sizing or demo stage: confirm
+broker economics (`config/broker_expectations.json`), confirm the news calendar
+(`config/news_calendar.json`), obtain the broker session/holiday calendar and
+commission schedule, and give explicit written authorization for demo work.
+
+The sections below describe earlier phases and are kept for history.
+
+---
+
+> **Implementation note (2026-11-02):** The active strategy and research
 > path use the broker instrument **`XAUUSD-P`** on the Fortune Prime Limited MT5
 > environment. The GC/MGC/COMEX text below describes legacy Phase 1–3 components
 > and is retained for historical compatibility; it is not the active instrument

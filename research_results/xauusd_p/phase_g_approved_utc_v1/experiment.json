@@ -1,0 +1,28 @@
+{
+  "experiment_id": "phase_g_approved_utc_v1",
+  "baseline_compared": "phase_e_authoritative_20261102 (research_filter_isolated variant, dataset_time)",
+  "changes_vs_baseline": [
+    "strategy identity: approved (session filter active) instead of filter-isolated variant",
+    "timestamps converted from broker server time to UTC with the inferred rule"
+  ],
+  "unchanged": [
+    "all strategy parameters",
+    "backtester, fill model, splits, datasets (source files untouched)"
+  ],
+  "holdout_policy": "evaluated once; no parameter was tuned on any split",
+  "time_semantics": {
+    "coordinate": "utc_inferred",
+    "rule": "broker server time = America/New_York local time + 7 h (inferred)",
+    "evidence": [
+      "live tick-vs-host measurement 2026-11-04: UTC+2",
+      "daily break 00:00-01:00 server in all DST regimes incl. US-on/EU-off weeks",
+      "weekly open Monday 01:00 server = Sunday 18:00 New York"
+    ],
+    "split_boundaries": "split windows are evaluated in UTC (Phase E used dataset_time)"
+  },
+  "labels": {
+    "research": "COMPLETE APPROVED STRATEGY xauusd_p_approved_v1 - IANA SESSION FILTER ACTIVE - NEWS-UNAWARE (NO HISTORICAL CALENDAR) - RESEARCH ONLY",
+    "gross": "GROSS BASELINE - EXECUTION COSTS EXCLUDED",
+    "time": "UTC VIA INFERRED BROKER DST RULE - NOT BROKER-CONFIRMED"
+  }
+}

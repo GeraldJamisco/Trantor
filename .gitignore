@@ -3,6 +3,8 @@
 .env.*
 !.env.example
 config/settings.json
+config/settings.*.json
+!config/settings.example.json
 
 # Python
 __pycache__/
@@ -36,3 +38,7 @@ research_data/
 .DS_Store
 Thumbs.db
 research_results/xauusd_p/phase_e_authoritative_20261102/decisions.jsonl 
+
+# Runtime state (SQLite, emergency stop, verification reports)
+state/
+state_*/

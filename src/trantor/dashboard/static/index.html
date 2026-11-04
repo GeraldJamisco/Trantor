@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="color-scheme" content="dark">
-  <title>Trantor Research Terminal</title>
+  <title>Trantor Terminal</title>
   <link rel="icon" href="/assets/trantor-mark.svg" type="image/svg+xml">
   <link rel="stylesheet" href="/assets/app.css">
 </head>
@@ -35,6 +35,13 @@
       <div class="brand-rule"></div>
       <nav class="nav" aria-label="Primary navigation">
         <a class="nav-item" href="#/dashboard" data-route="dashboard"><svg><use href="#i-home"/></svg><span>Dashboard</span></a>
+        <div class="nav-section">Operations</div>
+        <a class="nav-item" href="#/live" data-route="live"><svg><use href="#i-candles"/></svg><span>Live Market</span></a>
+        <a class="nav-item" href="#/signals" data-route="signals"><svg><use href="#i-file"/></svg><span>Signals &amp; Decisions</span></a>
+        <a class="nav-item" href="#/positions" data-route="positions"><svg><use href="#i-list"/></svg><span>Positions &amp; Trades</span></a>
+        <a class="nav-item" href="#/risk" data-route="risk"><svg><use href="#i-shield"/></svg><span>Risk</span></a>
+        <a class="nav-item" href="#/ops" data-route="ops"><svg><use href="#i-info"/></svg><span>Operations</span></a>
+        <div class="nav-section">Research</div>
         <a class="nav-item" href="#/research" data-route="research"><svg><use href="#i-research"/></svg><span>Research &amp; Backtest</span></a>
         <a class="nav-item" href="#/strategy" data-route="strategy"><svg><use href="#i-strategy"/></svg><span>Strategy</span></a>
         <a class="nav-item" href="#/chart" data-route="chart"><svg><use href="#i-candles"/></svg><span>Market Chart</span></a>
@@ -49,8 +56,8 @@
       <div class="sidebar-footer">
         <div class="safe-dot"></div>
         <div>
-          <div class="sidebar-footer-title">READ-ONLY RESEARCH</div>
-          <div class="sidebar-footer-sub">No order path connected</div>
+          <div class="sidebar-footer-title">READ-ONLY DASHBOARD</div>
+          <div class="sidebar-footer-sub">No order path from the browser</div>
         </div>
       </div>
     </aside>
@@ -81,5 +88,6 @@
 
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
   <script src="/assets/app.js" defer></script>
+  <script src="/assets/live.js" defer></script>
 </body>
 </html>

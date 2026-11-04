@@ -1,0 +1,387 @@
+{
+  "schema": "trantor.news_calendar",
+  "version": 1,
+  "source": "Official schedules: BLS CPI and Employment Situation release calendars; Federal Reserve FOMC meeting calendar",
+  "source_urls": [
+    "https://www.bls.gov/schedule/news_release/cpi.htm",
+    "https://www.bls.gov/schedule/news_release/empsit.htm",
+    "https://www.federalreserve.gov/monetarypolicy/fomccalendars.htm"
+  ],
+  "retrieved_at": "2026-11-04T11:20:00Z",
+  "owner_confirmed": false,
+  "coverage": {
+    "start": "2026-11-04T00:00:00Z",
+    "end": "2027-12-11T00:00:00Z"
+  },
+  "notes": "Compiled automatically from the official pages on 2026-11-04. FOMC times use the Fed's standard 14:00 ET statement and 14:30 ET press conference; the Fed states each meeting date is tentative until confirmed at the preceding meeting. The October 2026 FOMC (Oct 27-28) is before coverage start. Owner must check against the sources, then set owner_confirmed true with confirmed_by and confirmed_at, and re-confirm at least weekly.",
+  "events": [
+    {
+      "event_type": "nfp",
+      "title": "US Employment Situation / Nonfarm Payrolls (BLS)",
+      "currency": "USD",
+      "impact": "high",
+      "local_time": "2026-11-06T08:30:00",
+      "timezone": "America/New_York"
+    },
+    {
+      "event_type": "cpi",
+      "title": "US Consumer Price Index (BLS)",
+      "currency": "USD",
+      "impact": "high",
+      "local_time": "2026-11-10T08:30:00",
+      "timezone": "America/New_York"
+    },
+    {
+      "event_type": "nfp",
+      "title": "US Employment Situation / Nonfarm Payrolls (BLS)",
+      "currency": "USD",
+      "impact": "high",
+      "local_time": "2026-12-04T08:30:00",
+      "timezone": "America/New_York"
+    },
+    {
+      "event_type": "fomc",
+      "title": "FOMC statement",
+      "currency": "USD",
+      "impact": "high",
+      "local_time": "2026-12-09T14:00:00",
+      "timezone": "America/New_York"
+    },
+    {
+      "event_type": "fomc",
+      "title": "FOMC press conference",
+      "currency": "USD",
+      "impact": "high",
+      "local_time": "2026-12-09T14:30:00",
+      "timezone": "America/New_York"
+    },
+    {
+      "event_type": "cpi",
+      "title": "US Consumer Price Index (BLS)",
+      "currency": "USD",
+      "impact": "high",
+      "local_time": "2026-12-10T08:30:00",
+      "timezone": "America/New_York"
+    },
+    {
+      "event_type": "nfp",
+      "title": "US Employment Situation / Nonfarm Payrolls (BLS)",
+      "currency": "USD",
+      "impact": "high",
+      "local_time": "2027-01-08T08:30:00",
+      "timezone": "America/New_York"
+    },
+    {
+      "event_type": "cpi",
+      "title": "US Consumer Price Index (BLS)",
+      "currency": "USD",
+      "impact": "high",
+      "local_time": "2027-01-13T08:30:00",
+      "timezone": "America/New_York"
+    },
+    {
+      "event_type": "fomc",
+      "title": "FOMC statement",
+      "currency": "USD",
+      "impact": "high",
+      "local_time": "2027-01-27T14:00:00",
+      "timezone": "America/New_York"
+    },
+    {
+      "event_type": "fomc",
+      "title": "FOMC press conference",
+      "currency": "USD",
+      "impact": "high",
+      "local_time": "2027-01-27T14:30:00",
+      "timezone": "America/New_York"
+    },
+    {
+      "event_type": "nfp",
+      "title": "US Employment Situation / Nonfarm Payrolls (BLS)",
+      "currency": "USD",
+      "impact": "high",
+      "local_time": "2027-02-05T08:30:00",
+      "timezone": "America/New_York"
+    },
+    {
+      "event_type": "cpi",
+      "title": "US Consumer Price Index (BLS)",
+      "currency": "USD",
+      "impact": "high",
+      "local_time": "2027-02-11T08:30:00",
+      "timezone": "America/New_York"
+    },
+    {
+      "event_type": "nfp",
+      "title": "US Employment Situation / Nonfarm Payrolls (BLS)",
+      "currency": "USD",
+      "impact": "high",
+      "local_time": "2027-03-05T08:30:00",
+      "timezone": "America/New_York"
+    },
+    {
+      "event_type": "cpi",
+      "title": "US Consumer Price Index (BLS)",
+      "currency": "USD",
+      "impact": "high",
+      "local_time": "2027-03-10T08:30:00",
+      "timezone": "America/New_York"
+    },
+    {
+      "event_type": "fomc",
+      "title": "FOMC statement",
+      "currency": "USD",
+      "impact": "high",
+      "local_time": "2027-03-17T14:00:00",
+      "timezone": "America/New_York"
+    },
+    {
+      "event_type": "fomc",
+      "title": "FOMC press conference",
+      "currency": "USD",
+      "impact": "high",
+      "local_time": "2027-03-17T14:30:00",
+      "timezone": "America/New_York"
+    },
+    {
+      "event_type": "nfp",
+      "title": "US Employment Situation / Nonfarm Payrolls (BLS)",
+      "currency": "USD",
+      "impact": "high",
+      "local_time": "2027-04-02T08:30:00",
+      "timezone": "America/New_York"
+    },
+    {
+      "event_type": "cpi",
+      "title": "US Consumer Price Index (BLS)",
+      "currency": "USD",
+      "impact": "high",
+      "local_time": "2027-04-13T08:30:00",
+      "timezone": "America/New_York"
+    },
+    {
+      "event_type": "fomc",
+      "title": "FOMC statement",
+      "currency": "USD",
+      "impact": "high",
+      "local_time": "2027-04-28T14:00:00",
+      "timezone": "America/New_York"
+    },
+    {
+      "event_type": "fomc",
+      "title": "FOMC press conference",
+      "currency": "USD",
+      "impact": "high",
+      "local_time": "2027-04-28T14:30:00",
+      "timezone": "America/New_York"
+    },
+    {
+      "event_type": "nfp",
+      "title": "US Employment Situation / Nonfarm Payrolls (BLS)",
+      "currency": "USD",
+      "impact": "high",
+      "local_time": "2027-05-07T08:30:00",
+      "timezone": "America/New_York"
+    },
+    {
+      "event_type": "cpi",
+      "title": "US Consumer Price Index (BLS)",
+      "currency": "USD",
+      "impact": "high",
+      "local_time": "2027-05-12T08:30:00",
+      "timezone": "America/New_York"
+    },
+    {
+      "event_type": "nfp",
+      "title": "US Employment Situation / Nonfarm Payrolls (BLS)",
+      "currency": "USD",
+      "impact": "high",
+      "local_time": "2027-06-04T08:30:00",
+      "timezone": "America/New_York"
+    },
+    {
+      "event_type": "fomc",
+      "title": "FOMC statement",
+      "currency": "USD",
+      "impact": "high",
+      "local_time": "2027-06-09T14:00:00",
+      "timezone": "America/New_York"
+    },
+    {
+      "event_type": "fomc",
+      "title": "FOMC press conference",
+      "currency": "USD",
+      "impact": "high",
+      "local_time": "2027-06-09T14:30:00",
+      "timezone": "America/New_York"
+    },
+    {
+      "event_type": "cpi",
+      "title": "US Consumer Price Index (BLS)",
+      "currency": "USD",
+      "impact": "high",
+      "local_time": "2027-06-10T08:30:00",
+      "timezone": "America/New_York"
+    },
+    {
+      "event_type": "nfp",
+      "title": "US Employment Situation / Nonfarm Payrolls (BLS)",
+      "currency": "USD",
+      "impact": "high",
+      "local_time": "2027-07-02T08:30:00",
+      "timezone": "America/New_York"
+    },
+    {
+      "event_type": "cpi",
+      "title": "US Consumer Price Index (BLS)",
+      "currency": "USD",
+      "impact": "high",
+      "local_time": "2027-07-14T08:30:00",
+      "timezone": "America/New_York"
+    },
+    {
+      "event_type": "fomc",
+      "title": "FOMC statement",
+      "currency": "USD",
+      "impact": "high",
+      "local_time": "2027-07-28T14:00:00",
+      "timezone": "America/New_York"
+    },
+    {
+      "event_type": "fomc",
+      "title": "FOMC press conference",
+      "currency": "USD",
+      "impact": "high",
+      "local_time": "2027-07-28T14:30:00",
+      "timezone": "America/New_York"
+    },
+    {
+      "event_type": "nfp",
+      "title": "US Employment Situation / Nonfarm Payrolls (BLS)",
+      "currency": "USD",
+      "impact": "high",
+      "local_time": "2027-08-06T08:30:00",
+      "timezone": "America/New_York"
+    },
+    {
+      "event_type": "cpi",
+      "title": "US Consumer Price Index (BLS)",
+      "currency": "USD",
+      "impact": "high",
+      "local_time": "2027-08-11T08:30:00",
+      "timezone": "America/New_York"
+    },
+    {
+      "event_type": "nfp",
+      "title": "US Employment Situation / Nonfarm Payrolls (BLS)",
+      "currency": "USD",
+      "impact": "high",
+      "local_time": "2027-09-03T08:30:00",
+      "timezone": "America/New_York"
+    },
+    {
+      "event_type": "cpi",
+      "title": "US Consumer Price Index (BLS)",
+      "currency": "USD",
+      "impact": "high",
+      "local_time": "2027-09-14T08:30:00",
+      "timezone": "America/New_York"
+    },
+    {
+      "event_type": "fomc",
+      "title": "FOMC statement",
+      "currency": "USD",
+      "impact": "high",
+      "local_time": "2027-09-15T14:00:00",
+      "timezone": "America/New_York"
+    },
+    {
+      "event_type": "fomc",
+      "title": "FOMC press conference",
+      "currency": "USD",
+      "impact": "high",
+      "local_time": "2027-09-15T14:30:00",
+      "timezone": "America/New_York"
+    },
+    {
+      "event_type": "nfp",
+      "title": "US Employment Situation / Nonfarm Payrolls (BLS)",
+      "currency": "USD",
+      "impact": "high",
+      "local_time": "2027-10-08T08:30:00",
+      "timezone": "America/New_York"
+    },
+    {
+      "event_type": "cpi",
+      "title": "US Consumer Price Index (BLS)",
+      "currency": "USD",
+      "impact": "high",
+      "local_time": "2027-10-14T08:30:00",
+      "timezone": "America/New_York"
+    },
+    {
+      "event_type": "fomc",
+      "title": "FOMC statement",
+      "currency": "USD",
+      "impact": "high",
+      "local_time": "2027-10-27T14:00:00",
+      "timezone": "America/New_York"
+    },
+    {
+      "event_type": "fomc",
+      "title": "FOMC press conference",
+      "currency": "USD",
+      "impact": "high",
+      "local_time": "2027-10-27T14:30:00",
+      "timezone": "America/New_York"
+    },
+    {
+      "event_type": "nfp",
+      "title": "US Employment Situation / Nonfarm Payrolls (BLS)",
+      "currency": "USD",
+      "impact": "high",
+      "local_time": "2027-11-05T08:30:00",
+      "timezone": "America/New_York"
+    },
+    {
+      "event_type": "cpi",
+      "title": "US Consumer Price Index (BLS)",
+      "currency": "USD",
+      "impact": "high",
+      "local_time": "2027-11-10T08:30:00",
+      "timezone": "America/New_York"
+    },
+    {
+      "event_type": "nfp",
+      "title": "US Employment Situation / Nonfarm Payrolls (BLS)",
+      "currency": "USD",
+      "impact": "high",
+      "local_time": "2027-12-03T08:30:00",
+      "timezone": "America/New_York"
+    },
+    {
+      "event_type": "fomc",
+      "title": "FOMC statement",
+      "currency": "USD",
+      "impact": "high",
+      "local_time": "2027-12-08T14:00:00",
+      "timezone": "America/New_York"
+    },
+    {
+      "event_type": "fomc",
+      "title": "FOMC press conference",
+      "currency": "USD",
+      "impact": "high",
+      "local_time": "2027-12-08T14:30:00",
+      "timezone": "America/New_York"
+    },
+    {
+      "event_type": "cpi",
+      "title": "US Consumer Price Index (BLS)",
+      "currency": "USD",
+      "impact": "high",
+      "local_time": "2027-12-10T08:30:00",
+      "timezone": "America/New_York"
+    }
+  ]
+}

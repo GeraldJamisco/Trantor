@@ -22,7 +22,7 @@ from trantor.research.backtest.data import DEFAULT_CHECKSUMS, load_research_data
 from trantor.research.diagnostics import DiagnosticConfig, TradeDiagnosticsService
 from trantor.strategy.research_record import canonical_json
 
-APP_VERSION = "0.1.0"
+APP_VERSION = "0.2.0"
 DEFAULT_ARTIFACT_REL = Path(
     "research_results/xauusd_p/phase_e_authoritative_20261102"
 )

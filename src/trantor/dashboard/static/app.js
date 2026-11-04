@@ -23,6 +23,11 @@ const PAGE_META = {
   reports: ["Reports & Results", "Experiment summary, manifest, artifacts, and validation status."],
   system: ["System & Safety", "Read-only capabilities, execution status, and unresolved limitations."],
   config: ["Configuration", "Effective read-only settings with paths and sensitive values redacted."],
+  live: ["Live Market", "XAUUSD-P quotes, completed candles, freshness and sessions from the running runtime."],
+  signals: ["Signals & Decisions", "Every live/shadow/paper strategy decision with its confluence breakdown and record hash."],
+  positions: ["Positions & Trades", "Shadow and paper positions, partial exits, order lifecycle and closed trades."],
+  risk: ["Risk", "Daily loss, entries, concurrency, cooldown, lockout and the emergency stop."],
+  ops: ["Operations", "Runtime health, MT5 connection, broker verification, calendar, reconciliation and events."],
 };
 
 const esc = (value) => String(value ?? "—").replace(/[&<>"']/g, (ch) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[ch]));
@@ -69,10 +74,12 @@ async function getJSON(path, params = {}) {
 
 function setTopbar(overview) {
   const app = overview?.application || {};
-  const execution = overview?.execution || {};
-  document.getElementById("top-mode").textContent = app.mode ? "Research" : "Research";
-  document.getElementById("top-execution").textContent = "Disabled";
-  document.getElementById("top-execution").classList.add("disabled");
+  const live = state.liveStatus;
+  const profile = live?.running ? live.profile : null;
+  document.getElementById("top-mode").textContent = profile === "paper" ? "Paper" : profile === "shadow" ? "Shadow" : "Research";
+  const exec = document.getElementById("top-execution");
+  exec.textContent = profile === "paper" ? "Paper sim - no broker orders" : profile === "shadow" ? "No orders" : "Disabled";
+  exec.classList.toggle("disabled", profile !== "paper");
   document.getElementById("top-version").textContent = app.version || "0.1.0";
   const instrument = overview?.instrument?.symbol || "XAUUSD-P";
   document.getElementById("top-instrument").textContent = instrument;
@@ -535,11 +542,19 @@ function drawCandles(canvas, payload) {
     const x = left + step * index + step / 2;
     const green = candle.close >= candle.open;
     const color = green ? "#35d07d" : "#ff6170";
+    const forming = candle.complete === false;
+    ctx.globalAlpha = forming ? 0.45 : 1;
     ctx.strokeStyle = color; ctx.fillStyle = color; ctx.lineWidth = 1;
     ctx.beginPath(); ctx.moveTo(x, y(candle.high)); ctx.lineTo(x, y(candle.low)); ctx.stroke();
     const bodyW = Math.max(2, Math.min(8, step * 0.62));
     const yOpen = y(candle.open), yClose = y(candle.close);
     ctx.fillRect(x - bodyW / 2, Math.min(yOpen, yClose), bodyW, Math.max(1, Math.abs(yClose - yOpen)));
+    if (forming) {
+      ctx.globalAlpha = 1; ctx.strokeStyle = "#f2bd4b"; ctx.setLineDash([2, 2]);
+      ctx.strokeRect(x - bodyW / 2 - 2, Math.min(yOpen, yClose) - 2, bodyW + 4, Math.max(1, Math.abs(yClose - yOpen)) + 4);
+      ctx.setLineDash([]);
+    }
+    ctx.globalAlpha = 1;
   });
   const markers = payload.markers || [];
   if (markers.length) {
@@ -563,6 +578,7 @@ function drawCandles(canvas, payload) {
 }
 
 async function route() {
+  if (typeof stopLiveRefresh === "function") stopLiveRefresh();
   const { route: routeName } = currentRoute();
   const pageRoute = PAGE_META[routeName] ? routeName : "dashboard";
   state.route = pageRoute;
@@ -583,6 +599,11 @@ async function route() {
     else if (pageRoute === "reports") await renderReports();
     else if (pageRoute === "system") await renderSystem();
     else if (pageRoute === "config") await renderConfig();
+    else if (pageRoute === "live") await renderLive();
+    else if (pageRoute === "signals") await renderSignals();
+    else if (pageRoute === "positions") await renderPositions();
+    else if (pageRoute === "risk") await renderRisk();
+    else if (pageRoute === "ops") await renderOps();
   } catch (error) {
     document.getElementById("page").innerHTML = `${pageHeading(meta[0], meta[1])}${warningBanner([error.message], "error")}<div class="panel"><div class="panel-body">${emptyState("This view could not be loaded from the validated artifacts.")}</div></div>`;
     showToast(error.message, true);

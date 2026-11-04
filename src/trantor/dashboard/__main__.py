@@ -12,12 +12,19 @@ from .server import build_server
 def _parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         description=(
-            "Serve the read-only Trantor research dashboard. This does not "
-            "connect to a broker, run a backtest, or submit orders."
+            "Serve the read-only Trantor dashboard (research artifacts and the "
+            "runtime database). It does not connect to a broker, run a backtest, "
+            "or submit orders."
         )
     )
     parser.add_argument("--host", default="127.0.0.1")
     parser.add_argument("--port", type=int, default=8765)
+    parser.add_argument(
+        "--runtime-db",
+        type=Path,
+        default=None,
+        help="runtime SQLite database (default state/trantor_runtime.sqlite3); opened read-only",
+    )
     parser.add_argument(
         "--artifacts",
         type=Path,
@@ -40,10 +47,13 @@ def main(argv: list[str] | None = None) -> int:
         settings_example_path=default.settings_example_path,
         app_version=default.app_version,
     )
-    server = build_server(config, host=args.host, port=args.port)
+    if args.host not in ("127.0.0.1", "localhost", "::1"):
+        print("Refusing to bind to a non-loopback address: the dashboard has no authentication.")
+        return 2
+    server = build_server(config, host=args.host, port=args.port, runtime_db=args.runtime_db)
     host, port = server.server_address[:2]
     url = f"http://{host}:{port}/"
-    print("Trantor Research Dashboard")
+    print("Trantor Dashboard")
     print(f"Read-only local URL: {url}")
     print("Press Ctrl+C to stop. No broker connection or order route exists.")
     try:

@@ -1,10 +1,10 @@
-"""Trantor: a COMEX gold futures research and trading-system foundation.
+"""Trantor: XAUUSD-P research and trading system.
 
-Phases 1 through 3 contain configuration, domain models, safety, the broker
-interface, broker-independent market-data contracts, a COMEX GC/MGC session
-calendar, replay validation, and research-only gold analysis. They do not scan
-live markets, schedule jobs, send notifications, render a dashboard, connect to
-a broker, or place orders.
+Packages: ``strategy`` (approved rules), ``research`` (backtests and
+experiments), ``runtime`` (live shadow/paper pipeline), ``execution`` (gate,
+paper broker; no live adapter), ``monitoring`` (notifications, logs),
+``dashboard`` (read-only UI). Legacy GC/MGC components (``scanners``,
+``market_data.gold``) are retained for history. No module sends broker orders.
 """
 
-__version__ = "0.1.0"
+__version__ = "0.2.0"

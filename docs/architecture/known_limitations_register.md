@@ -148,3 +148,37 @@ The owner should accept, reject, or defer each of C-01–C-10 and D-01–D-13 be
 implementation. An unresolved item must not be silently converted into an
 implementation assumption. Any change to strategy thresholds/entry/stop/target
 rules requires a separate strategy review, not an architecture workaround.
+
+---
+
+## 9. Status update — 2026-11-04 (completion programme)
+
+Evidence and details: `docs/operations/implementation_log.md`,
+`docs/operations/acceptance_report.md`.
+
+| ID | Previous status | Status now | Evidence |
+|---|---|---|---|
+| C-01 | conflict | **Resolved for runtime**: runtime and gate are XAUUSD-P-only; GC/MGC legacy untouched | `runtime/`, `execution/gate.py` |
+| C-02/C-03 | conflict | **Resolved**: runtime consumes `StrategyDecision`; `TradeSignal` used only for `signal_id` | `runtime/engine.py` |
+| C-04 | conflict | **Resolved**: R tracker (`RiskTracker`) separate from monetary sizing (`size_position`, blocked without verified economics) | `runtime/risk.py` |
+| C-06 | conflict | **Resolved**: completed vs forming bars identified against the measured broker clock | `runtime/candles.py` |
+| C-07 | conflict | **Resolved**: SQLite WAL store, restart recovery, reconciliation | `runtime/store.py`, `engine.reconcile` |
+| L-01 | UNVERIFIED | **Measured**: broker server = UTC+2 on 2026-11-04; historical data consistent with server = New York + 7 h (US DST). Rule inferred, not broker-confirmed; summer offset (+3) not yet observed live | `runtime/timebase.py`, `research/experiments.py` |
+| L-02 | UNAVAILABLE | Still unverified. MT5 Python API exposes no session times. Daily break 22:00–23:00 UTC (winter) and Monday 01:00-server weekly open observed in data | broker verification report |
+| L-03 | UNAVAILABLE | **Official-source forward calendar compiled** (BLS CPI, BLS Employment Situation, Fed FOMC; 2026-11-04 → 2027-12-10), `owner_confirmed=false` → still unverified for the strategy. No historical calendar | `config/news_calendar.json` |
+| L-04 | UNVERIFIED | **Observed live**: symbol spread = (ask−bid)/point; bars built from bid (single sample); typical spread 18 points ($0.18) | broker verification report |
+| L-05/L-06 | SNAPSHOT | **Observed live and internally consistent** (contract 100, tick 0.01 = $1/lot, `order_calc_profit` agrees; vol 0.01–50 step 0.01). Not owner-confirmed → monetary sizing still blocked | broker verification report |
+| L-07 | UNAVAILABLE | Swap observed (−73.6 / +30.7 points, triple Wednesday); commission $0.00 on 2 historical deals (insufficient); slippage unknown | broker verification report |
+| L-08 | UNAVAILABLE | **Observed**: market execution, FOK/IOC filling, stops level 10 points, freeze level 0 | broker verification report |
+| L-09 | UNAVAILABLE | Paper equity model makes the 3% rule evaluable in paper; real account equity not used | `runtime/risk.py` |
+| L-10 | UNAVAILABLE | Unchanged: no demo adapter exists; demo/live refused by the gate | `execution/gate.py` |
+| L-15 | NOT EXECUTED | Executed 2026-11-02 (Phase E) | Phase E artifacts |
+
+New limitations recorded by this programme:
+
+| ID | Limitation | Impact |
+|---|---|---|
+| L-16 | Paper/shadow exits use the M15 bar model (stop-first), not ticks | paper results are a forward test of the research fill model, not of broker execution |
+| L-17 | Paper P/L is `R × risk amount`; no volume rounding, spread, commission or swap | paper results are gross |
+| L-18 | Runtime database grows ~5.6 KB per decision (~134 MB/year) | archival policy needed for long operation |
+| L-19 | Live shadow observation in this programme covered hours, not multiple full sessions | shadow acceptance not yet complete |
